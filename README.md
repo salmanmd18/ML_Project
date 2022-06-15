@@ -64,7 +64,7 @@ git remove -v
 To setup CI?CD pipeline in heroku we nedd 3 information
 
 1. HEROKU_EMAIL = salmanmohammed2018@gmail.com
-2. HEROKU_API_KEY = 7bed2cbc-22ba-46ba-801a-6c5d2859002f
+2. HEROKU_API_KEY = <>
 3. HEROKU_APP_NAME = ml-app-pf
 
 
