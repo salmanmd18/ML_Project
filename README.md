@@ -65,7 +65,7 @@ To setup CI?CD pipeline in heroku we nedd 3 information
 
 1. HEROKU_EMAIL = salmanmohammed2018@gmail.com
 2. HEROKU_API_KEY = <>
-3. HEROKU_APP_NAME = ml-app-pf
+3. HEROKU_APP_NAME = ml-app-p
 
 
 
