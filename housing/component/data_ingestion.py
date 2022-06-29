@@ -1,17 +1,15 @@
-from curses import raw
-import logging
-from pydoc import ttypager
-import re
-from turtle import down
-from sklearn.feature_selection import r_regression
+from housing.logger import logging
 
-from sklearn.utils import axis0_safe_slice
+
+
 from housing.entity.config_entity import DataIngestionConfig
 import os,sys
 from housing.exception import HousingException
 from housing.entity.artifact_entity import DataIngestionArtifact
 import tarfile
-from six.moves import urllib
+#from six.moves import urllib
+import urllib.request
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import StratifiedShuffleSplit
@@ -21,22 +19,23 @@ from sklearn.model_selection import StratifiedShuffleSplit
 
 class DataIngestion:
 
-    def __init__(self, data_ingestion_config:DataIngestionConfig):
+    def __init__(self, data_ingestion_config:DataIngestionConfig ):
         try:
             logging.info(f"{'='*20}Data Ingestion log started.{'='*20} ")
             self.data_ingestion_config = data_ingestion_config
+        
         except Exception as e:
             raise HousingException(e,sys)
 
     
-    def download_housing_data(self) -> str:
+    def download_housing_data(self,) -> str:
         try:
-            #extracting remote url to download dataset
+            #extraction remote url to download dataset
             download_url = self.data_ingestion_config.dataset_download_url
-            
-            #folder loaction to download file
-            tgz_download_dir = self.data_ingestion_config.tgz_download_dir
 
+            #folder location to download file
+            tgz_download_dir = self.data_ingestion_config.tgz_download_dir
+            
             if os.path.exists(tgz_download_dir):
                 os.remove(tgz_download_dir)
 
@@ -44,15 +43,16 @@ class DataIngestion:
 
             housing_file_name = os.path.basename(download_url)
 
-            tgz_file_path = os.path.join(tgz_download_dir,housing_file_name)
-            
-            logging.info(f"Downlaoding file from  [{download_url}] into :[{tgz_file_path}]")
-            urllib.request.urlretrive(download_url,tgz_file_path)
-            logging.info(f" file :[{tgz_file_path}] has been downloaded successfully.")
+            tgz_file_path = os.path.join(tgz_download_dir, housing_file_name)
+
+            logging.info(f"Downloading file from :[{download_url}] into :[{tgz_file_path}]")
+            urllib.request.urlretrieve(download_url, tgz_file_path)
+            logging.info(f"File :[{tgz_file_path}] has been downloaded successfully.")
             return tgz_file_path
 
         except Exception as e:
-            raise HousingException(e,sys) from e
+            raise HousingException(e,sys) 
+
 
     
     def extract_tgz_file(self,tgz_file_path):
@@ -130,15 +130,13 @@ class DataIngestion:
 
 
     def initiate_data_ingestion(self) ->DataIngestionArtifact:
-        try:
-            tgz_file_path = self.download_housing_data()
-            
-            self.extract_tgz_file(tgz_file_path=tgz_file_path)
+        
+        tgz_file_path = self.download_housing_data()
+        
+        self.extract_tgz_file(tgz_file_path=tgz_file_path)
 
-            return self.spilt_data_as_train_test()
+        return self.spilt_data_as_train_test()
 
-        except Exception as e:
-            raise HousingException(e,sys) from e
 
 
     def __del__(self):
